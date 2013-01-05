@@ -62,3 +62,8 @@ template "/etc/httpd/conf.d/passenger.conf" do
 	group "root"
 end
 
+# starts apache and chkconfig on
+service "httpd" do
+	supports :status => true, :restart => true, :reload => true
+	action [ :enable, :start ]
+end
