@@ -17,19 +17,22 @@ package "sqlite-devel" do
 end
 
 #$ git clone git://github.com/komagata/lokka.git
-git "/home/yudozen/tmp/lokka" do
-	repository "git://github.com/komagata/lokka.git"
+git "/home/yudozen/blog/lokka" do
+	repository "git@github.com:yudozen/lokka.git"
+	reference "master"
+	user "yudozen"
+	user "yudozen"
 	action :sync
 end
 
 #$ bundle install --without=production:postgresql:mysql
 bash "bundle install" do
-	code "cd /home/yudozen/tmp/lokka && bundle install --without=production:postgresql:mysql --path vendor/bundle"
+	code "cd /home/yudozen/blog/lokka && bundle install --without=production:postgresql:mysql --path vendor/bundle"
 end
 
 #$ bundle exec rake db:setup
 bash "rake db:setup" do
-	code "cd /home/yudozen/tmp/lokka && bundle exec rake db:setup"
+	code "cd /home/yudozen/blog/lokka && bundle exec rake db:setup"
 end
 
 # Apache 2
@@ -50,4 +53,12 @@ gem_package "passenger" do
 end
 
 # sudo passenger-install-apache2-module
-#$ bundle exec rackup
+
+# Apache conf for Passenger
+template "/etc/httpd/conf.d/passenger.conf" do
+	source "passenger.erb"
+	mode 0644
+	owner "root"
+	group "root"
+end
+
